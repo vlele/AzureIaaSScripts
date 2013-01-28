@@ -16,7 +16,7 @@ $lbsetwfe = 'load_balanced'
 Set-AzureSubscription -SubscriptionName $subscriptionName -CurrentStorageAccount   $storageAccountName -SubscriptionID $subscriptionId -Certificate $myCert
  
 # Has to be a unique name. Verify with Test-AzureService
-$serviceName = 'VLLBWFE3'
+$serviceName = 'VLLBWFE2'
 # Server Name
 $vmname1 = 'WFE1'
 # Server Name
