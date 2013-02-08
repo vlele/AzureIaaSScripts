@@ -1,24 +1,23 @@
-# Retrieve with Get-AzureSubscription 
+# -------------------------------------------------------------------------------------------------
+ # CreateVMs- This script creates uploads VHDs from the local machine and create VMs in Azure
+ #                    balanced end points. 
+ #
+ # To do - 
+ #         1) Create a file within a subfolder called "include" and add a script  
+ #            file called SubscriptionInfo.ps1 with the following variables 
+ # 
+ #            $subscriptionName
+ #            $storageAccountName
+ #            $subscriptionId
+ #            $storageAccountName
+ #            $thumbPrint  
+ #         
+ #         2) Specify appropriate values for variables $myCert, $location, $instanceSize, $serviceName
+ #
+ # -------------------------------------------------------------------------------------------------
 
-$subscriptionName = 'ais'  
-
-$storageAccountName = 'ais2'   
-
-$subscriptionId  = '66cacb0f-a871-4b0b-a161-bd04492f956a'
-
-$thumbPrint = '2EB9DD83557985E63FBFBBD2E7308B5093F2CAB2'
-
-$myCert = Get-Item cert:\\CurrentUser\My\$thumbprint 
-
-
-# Specify the storage account location to store the newly created VH
-Set-AzureSubscription -SubscriptionName $subscriptionName -CurrentStorageAccount   $storageAccountName -SubscriptionID $subscriptionId -Certificate $myCert
- 
-
-
-# Select the correct subscription (allows multiple subscription support) 
-Select-AzureSubscription -SubscriptionName $subscriptionName 
-
+# include the subscription info
+. C:\Users\vishwas.lele\Documents\MyScripts\include\SubscriptionInfo.ps1
 
 
 # Retreive with Get-AzureLocation 
@@ -57,6 +56,14 @@ $sourceosvhd = 'C:\vhd\Visual Studio 2012 Update 1 RTM ALM\Virtual Hard Disks\BL
 $destosvhd = 'http://' + $storageAccountName + '.blob.core.windows.net/uploads/BL_WS2008R2SP1x64Std.vhd'
 #$destdatavhd = 'https://' + $storageAccountName +'.blob.core.windows.net/uploads/AppServer1DataDisk.vhd'
 
+
+# Specify the storage account location to store the newly created VH
+Set-AzureSubscription -SubscriptionName $subscriptionName -CurrentStorageAccount   $storageAccountName -SubscriptionID $subscriptionId -Certificate $myCert
+ 
+
+
+# Select the correct subscription (allows multiple subscription support) 
+Select-AzureSubscription -SubscriptionName $subscriptionName 
 
 
 Add-AzureVhd -LocalFilePath $sourceosvhd -Destination $destosvhd 

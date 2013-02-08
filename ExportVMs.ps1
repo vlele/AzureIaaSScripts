@@ -1,5 +1,6 @@
 ﻿# -------------------------------------------------------------------------------------------------
- # DeleteVMs - This script deletes existing VMs
+ # ExportVms - This script exports the existing VM configuration
+ 
  #
  # To do - 
  #         1) Create a file within a subfolder called "include" and add a script  
@@ -21,24 +22,8 @@
 $myCert = Get-Item cert:\\CurrentUser\My\$thumbprint 
 
 
-# Has to be a unique name. Verify with Test-AzureService
-$serviceName = 'VLLBWFE3' 
-
-# Server Name
-$vmname1 = 'WFE1'
-
-# Server Name
-$vmname2 = 'WFE2'
-
-
-
-
+$cloudSvcName = 'az-ad-01'
 # Select the correct subscription (allows multiple subscription support) 
 Select-AzureSubscription -SubscriptionName $subscriptionName 
-
-
-Remove-AzureVM $serviceName -Name $vmname1
-Remove-AzureVM $serviceName -Name $vmname2
-
-
-Remove-AzureService $serviceName -Force
+$vmname = 'az-ad-01' 
+Export-AzureVM -ServiceName $cloudSvcName -Name $vmname -Path 'c:\Temp\mytestvm1-config.xml' -Verbose
