@@ -19,11 +19,27 @@
 # include the subscription info
 . C:\Users\vishwas.lele\Documents\MyScripts\include\SubscriptionInfo.ps1
 
+
+
+
+
+# Specify the storage account location to store the newly created VH
+Set-AzureSubscription -SubscriptionName $subscriptionName -CurrentStorageAccount   $storageAccountName -SubscriptionID $subscriptionId -Certificate $myCert
+ 
+# Select the correct subscription (allows multiple subscription support) 
+Select-AzureSubscription -SubscriptionName $subscriptionName 
+
+
 $myCert = Get-Item cert:\\CurrentUser\My\$thumbprint 
 
 
-$cloudSvcName = 'az-ad-01'
-# Select the correct subscription (allows multiple subscription support) 
-Select-AzureSubscription -SubscriptionName $subscriptionName 
-$vmname = 'az-ad-01' 
-Export-AzureVM -ServiceName $cloudSvcName -Name $vmname -Path 'c:\Temp\mytestvm1-config.xml' -Verbose
+$myVMs = @("az-ad-01","az-sql-01","az-sql-02","az-web-01","az-web-02")
+Foreach ( $myVM in $myVMs ) { 
+echo $myVM
+Stop-AzureVM -ServiceName $myVM -Name $myVM -Verbose
+$ExportPath = "C:\temp\ExportVMs\ExportAzureVM-$myVM.xml" 
+Export-AzureVM -ServiceName $myVM -name $myVM -Path $ExportPath -Verbose
+Remove-AzureVM -ServiceName $myVM -name $myVM -Verbose
+} 
+
+
