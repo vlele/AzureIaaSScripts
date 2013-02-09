@@ -1,0 +1,20 @@
+Replace the hardcoded path to 'include; folder with a with a relative path
+
+Check if the  $subscriptionName, $storageAccountName etc are defined by the included script. If not throw an error  
+
+Move the $ServiceName definition to SubscriptionInfo.ps1?
+
+Test if the service name is already taken? Append a characters to make it unique if needed.
+
+[Low] LoadBalancedVMSFromDisk is needed because we customized an existing image (a699494373c04fc0bc8f2bb1389d6106__Win2K8R2SP1-Datacenter-201212.01-en.us-30GB.vhd) 
+to i) enable IIS ii) add a virtual directory to match the probe path. If we can automate the last two steps, we can 
+make the scripts self standing ( i.e not dependent on a specific disc that is only available in our storage account
+
+Complete the ExportVM.ps1 script. Develop a companion ImportVM.ps1
+
+Automate the creation of VNET.  Add AD and Web and SQL boxes
+
+Setup PaaS & IaaS scripts
+
+
+
