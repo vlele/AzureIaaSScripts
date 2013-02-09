@@ -35,10 +35,9 @@ $myCert = Get-Item cert:\\CurrentUser\My\$thumbprint
 
 $myVMs = @("az-ad-01","az-sql-01","az-sql-02","az-web-01","az-web-02")
 Foreach ( $myVM in $myVMs ) { 
-echo $myVM
 Stop-AzureVM -ServiceName $myVM -Name $myVM -Verbose
 $ExportPath = "C:\temp\ExportVMs\ExportAzureVM-$myVM.xml" 
-Export-AzureVM -ServiceName $myVM -name $myVM -Path $ExportPath -Verbose
+#Export-AzureVM -ServiceName $myVM -name $myVM -Path $ExportPath -Verbose
 Remove-AzureVM -ServiceName $myVM -name $myVM -Verbose
 } 
 

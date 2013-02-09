@@ -35,6 +35,7 @@ Foreach ( $myVM in $myVMs )
     Stop-AzureVM -ServiceName $myVM -Name $myVM -Verbose
 }
 
+$vnetName = 'IAAS-DC' 
 $myVMs = @("az-ad-01","az-sql-01","az-sql-02","az-web-01","az-web-02")
 Foreach ( $myVM in $myVMs ) 
 { 
