@@ -42,7 +42,7 @@ Remove-AzureVM -ServiceName $cloudService -name $vm -Verbose
 
 #ais-crm-sql
 $cloudService = "ais-crm-sql"
-$vm = "ais-crm-ad"
+$vm = "ais-crm-sql"
 Stop-AzureVM -ServiceName $cloudService -Name $vm -Verbose
 $ExportPath = "C:\Users\vishwas.lele\Documents\MyScripts\config\$vm-config.xml" 
 Export-AzureVM -ServiceName $cloudService -name $vm -Path $ExportPath -Verbose
