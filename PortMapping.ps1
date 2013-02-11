@@ -3,22 +3,16 @@
  #               but each machine is directly available via port mapping 
  #
  # To do - 
- #         1) Create a file within a subfolder called "include" and add a script  
- #            file called SubscriptionInfo.ps1 with the following variables 
- # 
- #            $subscriptionName
- #            $storageAccountName
- #            $subscriptionId
- #            $storageAccountName
- #            $thumbPrint  
  #         
  #         2) Specify appropriate values for variables $myCert, $location, $instanceSize, $serviceName
  #
  # -------------------------------------------------------------------------------------------------
 
-# include the subscription info
-. C:\Users\vishwas.lele\Documents\MyScripts\include\SubscriptionInfo.ps1
+$ScriptDirectory = Split-Path $MyInvocation.MyCommand.Path
+. (Join-Path $ScriptDirectory 'Include\SubscriptionInfo.ps1')	
+. (Join-Path $ScriptDirectory 'Validation.ps1')	
 
+CheckReqVariables
 $myCert = Get-Item cert:\\CurrentUser\My\$thumbprint 
 
 # Retreive with Get-AzureLocation 
