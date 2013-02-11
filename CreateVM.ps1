@@ -15,10 +15,16 @@
  #         2) Specify appropriate values for variables $myCert, $location, $instanceSize, $serviceName
  #
  # -------------------------------------------------------------------------------------------------
+Import-Module 'C:\Program Files (x86)\Microsoft SDKs\Windows Azure\PowerShell\Azure\Azure.psd1'
 
-# include the subscription info
-. C:\Users\vishwas.lele\Documents\MyScripts\include\SubscriptionInfo.ps1
+$ScriptDirectory = Split-Path $MyInvocation.MyCommand.Path
+. (Join-Path $ScriptDirectory 'Include\SubscriptionInfo.ps1')	
+. (Join-Path $ScriptDirectory 'Validation.ps1')	
 
+CheckReqVariables
+
+#To get Azure Locations
+#Get-AzureLocation | Foreach-Object {$_.GetEnumerator() } | Select-Object Name,DisplayName
 
 # Retreive with Get-AzureLocation 
 $location = 'East US' 
@@ -29,11 +35,6 @@ $location = 'East US'
 
 $instanceSize = 'Medium' 
 
-
-
-# Has to be a unique name. Verify with Test-AzureService
-
-$serviceName = 'VLALM2' 
 
 
 
@@ -56,6 +57,7 @@ $sourceosvhd = 'C:\vhd\Visual Studio 2012 Update 1 RTM ALM\Virtual Hard Disks\BL
 $destosvhd = 'http://' + $storageAccountName + '.blob.core.windows.net/uploads/BL_WS2008R2SP1x64Std.vhd'
 #$destdatavhd = 'https://' + $storageAccountName +'.blob.core.windows.net/uploads/AppServer1DataDisk.vhd'
 
+$myCert = Get-Item cert:\\CurrentUser\My\$thumbprint
 
 # Specify the storage account location to store the newly created VH
 Set-AzureSubscription -SubscriptionName $subscriptionName -CurrentStorageAccount   $storageAccountName -SubscriptionID $subscriptionId -Certificate $myCert
@@ -64,6 +66,12 @@ Set-AzureSubscription -SubscriptionName $subscriptionName -CurrentStorageAccount
 
 # Select the correct subscription (allows multiple subscription support) 
 Select-AzureSubscription -SubscriptionName $subscriptionName 
+
+
+
+# Has to be a unique name. Verify with Test-AzureService
+
+ReturnUniqueSeriveName $serviceName 
 
 
 Add-AzureVhd -LocalFilePath $sourceosvhd -Destination $destosvhd 

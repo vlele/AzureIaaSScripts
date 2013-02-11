@@ -3,22 +3,17 @@
  
  #
  # To do - 
- #         1) Create a file within a subfolder called "include" and add a script  
- #            file called SubscriptionInfo.ps1 with the following variables 
- # 
- #            $subscriptionName
- #            $storageAccountName
- #            $subscriptionId
- #            $storageAccountName
- #            $thumbPrint 
- #            $vnetName ( needed for import) 
  #         
- #         2) Specify appropriate values for variables $myCert, $location, $instanceSize, $serviceName
+ #         1) Specify appropriate values for variables $myCert, $location, $instanceSize, $serviceName
  #
  # -------------------------------------------------------------------------------------------------
 
-# include the subscription info
-. C:\Users\vishwas.lele\Documents\MyScripts\include\SubscriptionInfo.ps1
+$ScriptDirectory = Split-Path $MyInvocation.MyCommand.Path
+. (Join-Path $ScriptDirectory 'Include\SubscriptionInfo.ps1')	
+. (Join-Path $ScriptDirectory 'Validation.ps1')	
+
+CheckReqVariables
+$myCert = Get-Item cert:\\CurrentUser\My\$thumbprint 
 
 # Specify the storage account location to store the newly created VH
 Set-AzureSubscription -SubscriptionName $subscriptionName -CurrentStorageAccount   $storageAccountName -SubscriptionID $subscriptionId -Certificate $myCert
@@ -26,23 +21,32 @@ Set-AzureSubscription -SubscriptionName $subscriptionName -CurrentStorageAccount
 # Select the correct subscription (allows multiple subscription support) 
 Select-AzureSubscription -SubscriptionName $subscriptionName 
 
-$myCert = Get-Item cert:\\CurrentUser\My\$thumbprint 
 
-$myVMs = @("az-sql-01","az-sql-02","az-web-01","az-web-02")
-Foreach ( $myVM in $myVMs ) 
-{ 
 
-    Stop-AzureVM -ServiceName $myVM -Name $myVM -Verbose
+$ExportPath = "C:\temp\ExportVMs\"
+
+$vms = @()
+Get-ChildItem $ExportPath | foreach {
+	$path = $ExportPath + $_
+	$vms += Import-AzureVM -Path $path
 }
+New-AzureVM -ServiceName $serviceName -VMs $vms
 
-$vnetName = 'IAAS-DC' 
-$myVMs = @("az-ad-01","az-sql-01","az-sql-02","az-web-01","az-web-02")
-Foreach ( $myVM in $myVMs ) 
-{ 
-    $ExportPath = "C:\Users\vishwas.lele\Documents\MyScripts\config\$myVM-config.xml"     
-    Import-AzureVM -Path $ExportPath | New-AzureVM -ServiceName $myVM -VNetName $vnetName 
-    Start-AzureVM -ServiceName $myVM -name $myVM 
-}
+#$myVMs = @("az-sql-01","az-sql-02","az-web-01","az-web-02")
+#Foreach ( $myVM in $myVMs ) 
+#{ 
+#
+#    Stop-AzureVM -ServiceName $myVM -Name $myVM -Verbose
+#}
+#
+#$vnetName = 'IAAS-DC' 
+#$myVMs = @("az-ad-01","az-sql-01","az-sql-02","az-web-01","az-web-02")
+#Foreach ( $myVM in $myVMs ) 
+#{ 
+#    $ExportPath = "C:\Users\vishwas.lele\Documents\MyScripts\config\$myVM-config.xml"     
+#    Import-AzureVM -Path $ExportPath | New-AzureVM -ServiceName $myVM -VNetName $vnetName 
+#    Start-AzureVM -ServiceName $myVM -name $myVM 
+#}
 
 
 
