@@ -3,16 +3,8 @@
  #                    balanced end points. 
  #
  # To do - 
- #         1) Create a file within a subfolder called "include" and add a script  
- #            file called SubscriptionInfo.ps1 with the following variables 
- # 
- #            $subscriptionName
- #            $storageAccountName
- #            $subscriptionId
- #            $storageAccountName
- #            $thumbPrint  
  #         
- #         2) Specify appropriate values for variables $myCert, $location, $instanceSize, $serviceName
+ #         1) Specify appropriate values for variables $myCert, $location, $instanceSize, $serviceName
  #
  # -------------------------------------------------------------------------------------------------
 Import-Module 'C:\Program Files (x86)\Microsoft SDKs\Windows Azure\PowerShell\Azure\Azure.psd1'
