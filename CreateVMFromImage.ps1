@@ -18,6 +18,6 @@ $adminPassword = 'Password1'
 $vmname = "mytestvm1"
 $cloudSvcName = "tempDNS"
 $affinityGrp = 'VNAffinity'
-New-AzureQuickVM -Windows -ServiceName $cloudSvcName -Name $vmname -ImageName $image -Password $adminPassword -AffinityGroup $affinityGrp
-$filename=$cloudSvcName+"_"+$vmname+"_config.zip"
+#New-AzureQuickVM -Windows -ServiceName $cloudSvcName -Name $vmname -ImageName $image -Password $adminPassword -AffinityGroup $affinityGrp
+$filename=$cloudSvcName+"_"+$vmname.ToUpper()+"_config.zip"
 UploadFileToBlob (Join-Path $ScriptDirectory 'Config.zip') "blob" $filename
