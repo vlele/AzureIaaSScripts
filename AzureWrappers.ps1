@@ -7,7 +7,7 @@
  
  Add-Type -Path "C:\Program Files\Microsoft SDKs\Windows Azure\.NET SDK\2012-10\ref\Microsoft.WindowsAzure.StorageClient.dll"
  $requestTimeoutInSeconds = 600;
- $cloudStorageAccountNameAndKey = new-object Microsoft.WindowsAzure.StorageCredentialsAccountAndKey($StorageAccountName, $StorageAccountKey);
+ $cloudStorageAccountNameAndKey = new-object Microsoft.WindowsAzure.StorageCredentialsAccountAndKey($blobStorageAccountName, $blobStorageAccountKey);
  $cloudStorageAccount = new-object Microsoft.WindowsAzure.CloudStorageAccount($cloudStorageAccountNameAndKey, $true);
  $cloudBlobClient = [Microsoft.WindowsAzure.StorageClient.CloudStorageAccountStorageClientExtensions]::CreateCloudBlobClient($cloudStorageAccount)
  $blobContainer = $cloudBlobClient.GetContainerReference($blobContainerName);
