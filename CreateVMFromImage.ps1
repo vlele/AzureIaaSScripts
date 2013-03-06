@@ -19,17 +19,16 @@ $ScriptDirectory = Split-Path $MyInvocation.MyCommand.Path
 CheckReqVariables
 
 #variables
-
 $myCert = Get-Item cert:\\CurrentUser\My\$thumbprint
-# Specify the storage account location to store the newly created VH
-#Set-AzureSubscription -SubscriptionName $subscriptionName -CurrentStorageAccount   $storageAccountName -SubscriptionID $subscriptionId -Certificate $myCert
-
-Set-AzureSubscription -SubscriptionName $subscriptionName -CurrentStorageAccount $storageAccountName
 $image= "TemplateVM"
 $adminPassword = 'Password1'
 $cloudSvcName = "tempDNS123" 
 $affinityGrp = 'VNAffinity'
 
+#Set the subscription to create the VMs
+Set-AzureSubscription -SubscriptionName $subscriptionName -CurrentStorageAccount $storageAccountName
+
+#Check if the given affinity group is correct else give error and stop
 $IsAffinityCorrect = Test-AzureName -Service -Name $affinityGrp
 if($IsAffinityCorrect  -eq $false)
 {
@@ -37,6 +36,7 @@ if($IsAffinityCorrect  -eq $false)
 		exit
 }
 
+#initialize vms config
 $iisvm1 = New-AzureVMConfig -Name 'iis1' -InstanceSize Small -ImageName $image |
 	Add-AzureEndpoint -Name web -LocalPort 80 -PublicPort 80 -Protocol tcp -LBSetName web -ProbePath '/HealthCheck/HealthCheck.aspx' -ProbeProtocol http -ProbePort 80 |
 	Add-AzureEndpoint -Name webdeploy -LocalPort 8080 -PublicPort 8080 -Protocol tcp | 
@@ -46,27 +46,18 @@ $iisvm2 = New-AzureVMConfig -Name 'iis2' -InstanceSize Small -ImageName $image |
 	Add-AzureEndpoint -Name web -LocalPort 80 -PublicPort 80 -Protocol tcp -LBSetName web -ProbePath '/HealthCheck/HealthCheck.aspx' -ProbeProtocol http -ProbePort 80 |
 	Add-AzureProvisioningConfig -Windows -Password $adminPassword
 	
-
-	
+#Create vms in network	
 New-AzureVM -ServiceName $cloudSvcName -VMs $iisvm1,$iisvm2 -AffinityGroup $affinityGrp # -Location 'West US'
 
 
+#Upload the config with the machine and cloudservice name to blob
+#Set subscription for blob config upload
 Set-AzureSubscription -SubscriptionName $subscriptionName -CurrentStorageAccount $blobStorageAccountName
-#$filename=$cloudSvcName+"_"+$vmname.ToUpper()+"_config.zip"
 
+#Form the config name and upload to blob
 $filename=$cloudSvcName+"_"+'iis1'.ToUpper()+"_config.zip"
 UploadFileToBlob (Join-Path $ScriptDirectory 'Config.zip') "blob" $filename
 
 $filename=$cloudSvcName+"_"+'iis2'.ToUpper()+"_config.zip"
 UploadFileToBlob (Join-Path $ScriptDirectory 'Config.zip') "blob" $filename
 
-#Remove-AzureDeployment -ServiceName "tempDNS" -Slot Production -Force
-#Remove-AzureService -ServiceName "tempDNS"
-#Remove-AzureDisk -DiskName 'mydisk' -DeleteVHD  
-
-#New-AzureQuickVM -Windows -ServiceName $cloudSvcName -Name $vmname -ImageName $image -Password $adminPassword -AffinityGroup $affinityGrp
-#$imgname = 'WebAppImg'
-#$cloudsvc = 'tempDNS12345'
-#$pass = 'your password'
-#$serviceName="tempDNS"
-#ReturnUniqueSeriveName($serviceName)
