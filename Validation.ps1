@@ -29,10 +29,18 @@ Function CheckReqVariables ()
 		Write-Error "storageAccountName not found"
 		exit
 	}
+	$found=Test-Path variable:global:blobStorageAccountName
+	IF($found -eq $false -and $blobStorageAccountName.get_Length -eq 0)
+	{
+		Write-Error "blobstorageAccountName not found"
+		exit
+	}
+	
 	Write-Verbose "subscriptionName: $subscriptionName"
 	Write-Verbose "subscriptionId:$subscriptionId"
 	Write-Verbose "thumbPrint:$thumbPrint"
 	Write-Verbose "storageAccountName:$storageAccountName"
+	Write-Verbose "blobstorageAccountName:$blobStorageAccountName"
 }
 
 #Changes the $serviceName to available free service name
